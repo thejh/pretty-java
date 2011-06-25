@@ -98,7 +98,7 @@ public class PrettyJava                                                         
       if (indentDiff == 2)                                                                             {
         uglySymbols[i] += "{"                                                                          ;}
       else if (indentDiff < 0)                                                                         {
-        if ((-indentDiff)%2 != 0)                                                                      {
+        if ( (-indentDiff)%2 != 0)                                                                     {
           throw new RuntimeException("indentation must be a multiple of 2!")                           ;}
         for (int n=0; n<-indentDiff; n+=2)                                                             {
           uglySymbols[i] += "}"                                                                        ;}}}
