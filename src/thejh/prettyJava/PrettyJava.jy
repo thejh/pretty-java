@@ -1,4 +1,4 @@
-package thejh.prettyJava
+package thejh.prettyJava                                                                            
 
 import java.io.*
 
@@ -68,8 +68,7 @@ public class PrettyJava
       for String completeLineEater: completeLineEating
         if lineWithoutIndent.startsWith(completeLineEater+" ")
           String withoutEater = lineWithoutIndent.substring(completeLineEater.length()+1)
-          if !withoutEater.startsWith("(")
-            lines[i] = nTimes(" ", getIndentation(lines[i]))+completeLineEater+" ("+withoutEater+")"
+          lines[i] = nTimes(" ", getIndentation(lines[i]))+completeLineEater+" ("+withoutEater+")"
       if lines[i].length() > maxLineLength
         maxLineLength = lines[i].length()
       int indentation = getIndentation(lines[i])
