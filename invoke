@@ -1,0 +1,2 @@
+#!/bin/bash
+java -cp 'bin' thejh.prettyJava.PrettyJava $1 > $2
