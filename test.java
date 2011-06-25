@@ -10,4 +10,8 @@ public class PrettyJava                           {
         //return something                        
         return i                                  ;}}
                                                   
-    return -1                                     ;}}
+    return -1                                     ;}
+                                                  
+  public static void testFor()                    {
+    for (int i = 0; i < 10; i++)                  {
+      System.out.println(i)                       ;}}}

@@ -1,9 +1,12 @@
 package thejh.prettyJava                                                                               ;
                                                                                                        
 import java.io.*                                                                                       ;
+import java.util.regex.*                                                                               ;
                                                                                                        
 public class PrettyJava                                                                                {
-  public static final String[] completeLineEating = new String[]{"if", "for", "else if", "while"};     ;
+  public static final String[] completeLineEating = new String[]{"if", "for", "else if", "while"}      ;
+                                                                                                       
+  public static final String ppVar = "[a-zA-Z$_][a-zA-Z$_0-9]*"                                        ;
                                                                                                        
   public static int getIndentation(String line)                                                        {
     for (int i=0; i<line.length(); i++)                                                                {
@@ -11,6 +14,18 @@ public class PrettyJava                                                         
       if (c != ' ')                                                                                    {
         return i                                                                                       ;}}
     return -1                                                                                          ;}
+                                                                                                       
+  public static String compileFor(String line)                                                         {
+    // "i in [0..9]"                                                                                   
+    Pattern pFromTo = Pattern.compile("("+ppVar+") in \\[(\\d+)(\\.{2,3})(\\d+)\\]")                   ;
+    Matcher mFromTo = pFromTo.matcher(line)                                                            ;
+    if (mFromTo.matches())                                                                             {
+      String var = mFromTo.group(1)                                                                    ;
+      String start = mFromTo.group(2)                                                                  ;
+      String rangeDots = mFromTo.group(3)                                                              ;
+      String end = mFromTo.group(4)                                                                    ;
+      return "int "+var+" = "+start+"; "+var+" < "+end+"; "+var+"++"                                   ;}
+    return line                                                                                        ;}
                                                                                                        
   public static String stripIndentation(String line)                                                   {
     int indent = getIndentation(line)                                                                  ;
@@ -68,6 +83,8 @@ public class PrettyJava                                                         
       for (String completeLineEater: completeLineEating)                                               {
         if (lineWithoutIndent.startsWith(completeLineEater+" "))                                       {
           String withoutEater = lineWithoutIndent.substring(completeLineEater.length()+1)              ;
+          if (completeLineEater.equals("for"))                                                         {
+            withoutEater = compileFor(withoutEater)                                                    ;}
           lines[i] = nTimes(" ", getIndentation(lines[i]))+completeLineEater+" ("+withoutEater+")"     ;}}
       if (lines[i].length() > maxLineLength)                                                           {
         maxLineLength = lines[i].length()                                                              ;}

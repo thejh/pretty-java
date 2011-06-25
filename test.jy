@@ -11,3 +11,7 @@ public class PrettyJava
         return i
     
     return -1
+  
+  public static void testFor()
+    for i in [0..10]
+      System.out.println(i)
