@@ -44,7 +44,6 @@ public class PrettyJava
     return content
 
   public static String compile(String code)
-    code += "\n"
     String[] lines = code.split("\\n")
     int[] indentations = new int[lines.length]
     boolean[] linesWithContent = new boolean[lines.length]
