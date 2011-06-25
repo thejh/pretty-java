@@ -3,7 +3,7 @@ package thejh.prettyJava                                                        
 import java.io.*                                                                                       ;
                                                                                                        
 public class PrettyJava                                                                                {
-  public static final String[] completeLineEating = new String[]{"if", "for"};                         ;
+  public static final String[] completeLineEating = new String[]{"if", "for", "else if", "while"};     ;
                                                                                                        
   public static int getIndentation(String line)                                                        {
     for (int i=0; i<line.length(); i++)                                                                {
