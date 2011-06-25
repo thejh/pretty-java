@@ -17,7 +17,7 @@ public class PrettyJava
   
   public static String compileFor(String line)
     // "i in [0..9]"
-    Pattern pFromTo = Pattern.compile("("+ppVar+") in \\[(\\d+)(\\.{2,3})(\\d+)\\]")
+    Pattern pFromTo = Pattern.compile("("+ppVar+") in \\[(.*)(\\.{2,3})(.*)\\]")
     Matcher mFromTo = pFromTo.matcher(line)
     if mFromTo.matches()
       String var = mFromTo.group(1)
