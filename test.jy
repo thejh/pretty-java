@@ -15,3 +15,8 @@ public class PrettyJava
   public static void testFor()
     for i in [0..10]
       System.out.println(i)
+  
+  public static void foo()
+    String[] names = new String[]{"Alice", "Bob", "Evil Eve"};
+    for name in names
+      System.out.println(name)
