@@ -11,6 +11,7 @@ Automatic braces for `if`, `for`, `else if` and `while`
 Every line that begins with one of those keywords will automatically get braces. Example of valid code:
 
     if foo == 3
+      System.out.println("foo is three!")
 
 Cooler `for` loops
 ------------------
