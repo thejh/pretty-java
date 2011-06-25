@@ -2,3 +2,5 @@
 git checkout bin/*
 java -cp 'bin' thejh.prettyJava.PrettyJava src/thejh/prettyJava/PrettyJava.jy > java/thejh/prettyJava/PrettyJava.java
 javac -sourcepath 'java' -d 'bin' -Xlint:deprecation java/thejh/prettyJava/PrettyJava.java
+java -cp 'bin' thejh.prettyJava.PrettyJava src/thejh/prettyJava/PrettyJava.jy > java/thejh/prettyJava/PrettyJava.java
+javac -sourcepath 'java' -d 'bin' -Xlint:deprecation java/thejh/prettyJava/PrettyJava.java
