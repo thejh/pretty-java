@@ -3,12 +3,20 @@ package thejh.prettyJava                                                        
 import java.io.*                                                                                       ;
                                                                                                        
 public class PrettyJava                                                                                {
+  public static final String[] completeLineEating = new String[]{"if", "for"};                         ;
+                                                                                                       
   public static int getIndentation(String line)                                                        {
     for (int i=0; i<line.length(); i++)                                                                {
       char c = line.charAt(i)                                                                          ;
       if (c != ' ')                                                                                    {
         return i                                                                                       ;}}
     return -1                                                                                          ;}
+                                                                                                       
+  public static String stripIndentation(String line)                                                   {
+    int indent = getIndentation(line)                                                                  ;
+    if (indent == -1)                                                                                  {
+      return ""                                                                                        ;}
+    return line.substring(indent)                                                                      ;}
                                                                                                        
   public static boolean isWhitespaceOnly(String line)                                                  {
     for (int i=0; i<line.length(); i++)                                                                {
@@ -31,6 +39,12 @@ public class PrettyJava                                                         
       line += " "                                                                                      ;}
     return line                                                                                        ;}
                                                                                                        
+  public static String nTimes(String str, int times)                                                   {
+    String result = ""                                                                                 ;
+    for (int i=0; i<times; i++)                                                                        {
+      result += str                                                                                    ;}
+    return result                                                                                      ;}
+                                                                                                       
   public static String readEntireFile(String name) throws Exception                                    {
     String content = ""                                                                                ;
     File file = new File(name)                                                                         ;
@@ -49,11 +63,16 @@ public class PrettyJava                                                         
     boolean[] linesWithContent = new boolean[lines.length]                                             ;
     int maxLineLength = 0                                                                              ;
     for (int i=0; i<lines.length; i++)                                                                 {
-      String line = lines[i]                                                                           ;
       linesWithContent[i] = !isWhitespaceOnly(lines[i])                                                ;
-      if (line.length() > maxLineLength)                                                               {
-        maxLineLength = line.length()                                                                  ;}
-      int indentation = getIndentation(line)                                                           ;
+      String lineWithoutIndent = stripIndentation(lines[i])                                            ;
+      for (String completeLineEater: completeLineEating)                                               {
+        if (lineWithoutIndent.startsWith(completeLineEater+" "))                                       {
+          String withoutEater = lineWithoutIndent.substring(completeLineEater.length()+1)              ;
+          if (!withoutEater.startsWith("("))                                                           {
+            lines[i] = nTimes(" ", getIndentation(lines[i]))+completeLineEater+" ("+withoutEater+")"   ;}}}
+      if (lines[i].length() > maxLineLength)                                                           {
+        maxLineLength = lines[i].length()                                                              ;}
+      int indentation = getIndentation(lines[i])                                                       ;
       indentations[i] = indentation                                                                    ;}
     String[] uglySymbols = new String[lines.length]                                                    ;
                                                                                                        
