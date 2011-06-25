@@ -35,7 +35,7 @@ public class PrettyJava
     return false
 
   public static String addPadding(String line, int targetLength)
-    while (line.length() < targetLength)
+    while line.length() < targetLength
       line += " "
     return line
   
@@ -51,7 +51,7 @@ public class PrettyJava
     FileInputStream rawin = new FileInputStream(file)
     BufferedReader in = new BufferedReader(new InputStreamReader(rawin))
     String line = null
-    while ((line = in.readLine()) != null)
+    while  (line = in.readLine()) != null
       if !content.equals("")
         content += "\n"
       content += line
@@ -87,7 +87,7 @@ public class PrettyJava
         if nexti == lines.length
           hasNextLine = false
           break
-      while (!linesWithContent[nexti])
+      while !linesWithContent[nexti]
       int indentDiff;
       if hasNextLine
         indentDiff = indentations[nexti] - indentations[i]
@@ -97,7 +97,7 @@ public class PrettyJava
         uglySymbols[i] += ";"
       if indentDiff == 2
         uglySymbols[i] += "{"
-      else if (indentDiff < 0)
+      else if indentDiff < 0
         if  (-indentDiff)%2 != 0
           throw new RuntimeException("indentation must be a multiple of 2!")
         for int n=0; n<-indentDiff; n+=2

@@ -51,7 +51,7 @@ public class PrettyJava                                                         
     FileInputStream rawin = new FileInputStream(file)                                                  ;
     BufferedReader in = new BufferedReader(new InputStreamReader(rawin))                               ;
     String line = null                                                                                 ;
-    while ((line = in.readLine()) != null)                                                             {
+    while ( (line = in.readLine()) != null)                                                            {
       if (!content.equals(""))                                                                         {
         content += "\n"                                                                                ;}
       content += line                                                                                  ;}
