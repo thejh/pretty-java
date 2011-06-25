@@ -55,8 +55,6 @@ public class PrettyJava                                                        {
         maxLineLength = line.length()                                          ;}
       int indentation = getIndentation(line)                                   ;
       indentations[i] = indentation                                            ;}
-    //we have to close all brackets at the end of the file                     
-    indentations[lines.length-1] = 0                                           ;
     String[] uglySymbols = new String[lines.length]                            ;
                                                                                
     for (int i=0; i<lines.length; i++)                                         {
@@ -100,4 +98,3 @@ public class PrettyJava                                                        {
     String code = readEntireFile(args[0])                                      ;
     String compiled = compile(code)                                            ;
     System.out.println(compiled)                                               ;}}
-                                                                               
