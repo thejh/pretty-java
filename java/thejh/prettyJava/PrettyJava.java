@@ -10,6 +10,22 @@ public class PrettyJava                                                        {
         return i                                                               ;}}
     return -1                                                                  ;}
   
+  public static boolean isWhitespaceOnly(String line)                          {
+    for (int i=0; i<line.length(); i++)                                        {
+      char c = line.charAt(i)                                                  ;
+      if (c != ' ')                                                            {
+        return false                                                           ;}}
+    return true                                                                ;}
+  
+  public static boolean couldNeedSemicolon(String line)                        {
+    for (int i=0; i<line.length(); i++)                                        {
+      char c = line.charAt(i)                                                  ;
+      if (c != ' ')                                                            {
+        if (line.indexOf("//") == i)                                           {
+          return false                                                         ;}
+        return true                                                            ;}}
+    return false                                                               ;}
+  
   public static String addPadding(String line, int targetLength)               {
     while (line.length() < targetLength)                                       {
       line += " "                                                              ;}
@@ -31,23 +47,32 @@ public class PrettyJava                                                        {
     code += "\n"                                                               ;
     String[] lines = code.split("\\n")                                         ;
     int[] indentations = new int[lines.length]                                 ;
+    boolean[] linesWithContent = new boolean[lines.length]                     ;
     int maxLineLength = 0                                                      ;
     for (int i=0; i<lines.length; i++)                                         {
       String line = lines[i]                                                   ;
+      linesWithContent[i] = !isWhitespaceOnly(lines[i])                        ;
       if (line.length() > maxLineLength)                                       {
         maxLineLength = line.length()                                          ;}
       int indentation = getIndentation(line)                                   ;
-      if (indentation == -1)                                                   {
-        //IMPORTANT: no blank first line possible!
-        indentations[i] = indentations[i-1]                                    ;}
-      else                                                                     {
-        indentations[i] = indentation                                          ;}}
+      indentations[i] = indentation                                            ;}
     //we have to close all brackets at the end of the file
     indentations[lines.length-1] = 0                                           ;
     String[] uglySymbols = new String[lines.length]                            ;
-    for (int i=0; i<lines.length-1; i++)                                       {
+    
+    lineloop: for (int i=0; i<lines.length; i++)                               {
       uglySymbols[i] = ""                                                      ;
-      int indentDiff = indentations[i+1] - indentations[i]                     ;
+      if (!linesWithContent[i])                                                {
+        continue                                                               ;}
+      int nexti = i                                                            ;
+      do                                                                       {
+        nexti++                                                                ;
+        if (nexti == lines.length)                                             {
+          break lineloop                                                       ;}}
+      while (!linesWithContent[nexti])                                         ;
+      int indentDiff = indentations[nexti] - indentations[i]                   ;
+      if (indentDiff <= 0 && couldNeedSemicolon(lines[i]))                     {
+        uglySymbols[i] += ";"                                                  ;}
       if (indentDiff == 2)                                                     {
         uglySymbols[i] += "{"                                                  ;}
       else if (indentDiff < 0)                                                 {
@@ -55,6 +80,7 @@ public class PrettyJava                                                        {
           throw new RuntimeException("indentation must be a multiple of 2!")   ;}
         for (int n=0; n<-indentDiff; n+=2)                                     {
           uglySymbols[i] += "}"                                                ;}}}
+    
     int paddingTarget = maxLineLength+5                                        ;
     for (int i=0; i<lines.length-1; i++)                                       {
       lines[i] = addPadding(lines[i], paddingTarget) + uglySymbols[i]          ;}
