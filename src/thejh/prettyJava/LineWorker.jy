@@ -15,11 +15,15 @@ class LineWorker
   public void implicitCallBrackets(ArrayList<Token> tokens)
     while true
       Token lastToken = null
+      Token twoAgo = null
       boolean completedOne = false
       for ListIterator<Token> iter = tokens.listIterator(); iter.hasNext();
         Token t = iter.next()
         if lastToken != null
-          if lastToken.isVariably() && !t.isSymbol() && !t.isKeyword()
+          boolean tIsBlockerKeyword = t.isKeyword() && !t.toString().equals("new") && !t.toString().equals("this")
+          boolean lastTokenIsNewClass = twoAgo != null && lastToken.isClassy() && "new".equals(twoAgo.toString())
+          boolean lastTokenBlocks = !lastToken.isString() && !lastToken.isVariably() && !lastTokenIsNewClass
+          if !lastTokenBlocks && !t.isSymbol() && !tIsBlockerKeyword
             iter.previous()
             iter.add(new SymbolToken('('))
             int bracketLevel = 0
@@ -38,6 +42,7 @@ class LineWorker
               tokens.add(new SymbolToken(')'))
               completedOne = true
             break
+        twoAgo = lastToken
         lastToken = t
       if !completedOne
         break

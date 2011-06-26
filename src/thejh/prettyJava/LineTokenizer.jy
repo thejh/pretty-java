@@ -18,6 +18,8 @@ abstract class Token
     return false
   public boolean isNumber()
     return false
+  public boolean isString()
+    return false
 
 class NumberToken extends Token
   public String value
@@ -100,6 +102,9 @@ class StringToken extends Token
     //FIXME is this right?
     value = value.replaceAll("\b", "\\\\b")
     return "\""+value+"\""
+  
+  public boolean isString()
+    return true
   
 class CharToken extends Token
   public char value

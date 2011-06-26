@@ -14,6 +14,9 @@ public class PrettyJava                                       {
     return -1                                                 ;}
                                                               
   public static void testFor()                                {
+    new Foo(new Bar)                                          ;
+    new Foo(bar)                                              ;
+    foo(new Foo)                                              ;
     for(int i=0;i<10;i++)                                     {
       System.out.println(i)                                   ;}
     for(int$number1=0;$number1<10;$number1++)                 {

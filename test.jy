@@ -14,6 +14,9 @@ public class PrettyJava
     return -1
   
   public static void testFor()
+    new Foo new Bar
+    new Foo bar
+    foo new Foo
     for i in [0..10]
       System.out.println(i)
     for [0..10]

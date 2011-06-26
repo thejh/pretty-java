@@ -17,6 +17,8 @@ abstract class Token                                                            
   public boolean isSymbol()                                                                                                     {
     return false                                                                                                                ;}
   public boolean isNumber()                                                                                                     {
+    return false                                                                                                                ;}
+  public boolean isString()                                                                                                     {
     return false                                                                                                                ;}}
                                                                                                                                 
 class NumberToken extends Token                                                                                                 {
@@ -99,7 +101,10 @@ class StringToken extends Token                                                 
     value=value.replaceAll("\\t","\\\\t")                                                                                       ;
                                                                                                                                 
     value=value.replaceAll("\b","\\\\b")                                                                                        ;
-    return "\""+value+"\""                                                                                                      ;}}
+    return "\""+value+"\""                                                                                                      ;}
+                                                                                                                                
+  public boolean isString()                                                                                                     {
+    return true                                                                                                                 ;}}
                                                                                                                                 
 class CharToken extends Token                                                                                                   {
   public char value                                                                                                             ;
