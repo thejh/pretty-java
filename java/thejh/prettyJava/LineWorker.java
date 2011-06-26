@@ -12,6 +12,22 @@ class LineWorker                                                                
     this.scope=scope                                                                                           ;
     this.srcClass=srcClass                                                                                     ;}
                                                                                                                
+  public void assignmentToDeclaration(ArrayList<Token>tokens)                                                  {
+    if(tokens.size()<2)                                                                                        {
+      return                                                                                                   ;}
+    if(!tokens.get(0).isVariably()||!tokens.get(1).toString().equals("="))                                     {
+      return                                                                                                   ;}
+    if(null!=scope.getType(tokens.get(0).toString()))                                                          {
+      return                                                                                                   ;}
+    if(tokens.size()==3)                                                                                       {
+      Token value=tokens.get(2)                                                                                ;
+      if(value.isString())                                                                                     {
+        tokens.add(0,new WordToken("String"))                                                                  ;
+        return                                                                                                 ;}
+      else if(value.isVariably())                                                                              {
+        tokens.add(0,new WordToken(scope.getType(value.toString())))                                           ;
+        return                                                                                                 ;}}}
+                                                                                                               
   public void implicitCallBrackets(ArrayList<Token>tokens)                                                     {
     while(true)                                                                                                {
       Token lastToken=null                                                                                     ;
@@ -73,6 +89,7 @@ class LineWorker                                                                
     ArrayList<Token>tokens=tokenizer.doIt()                                                                    ;
     recognizeFloatingPointNumbers(tokens)                                                                      ;
     implicitCallBrackets(tokens)                                                                               ;
+    assignmentToDeclaration(tokens)                                                                            ;
     return distokenize(tokens)                                                                                 ;}
                                                                                                                
   public String distokenize(ArrayList<Token>tokens)                                                            {

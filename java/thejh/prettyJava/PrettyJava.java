@@ -92,7 +92,7 @@ public class PrettyJava                                                         
   public static final String ppDeclareModifiers="(?:(?:"+ppDeclareModifier+" )*"+ppDeclareModifier+" +)?"                       ;
   public static final String ppMethodParams="(?:\\(((?:"+ppType+" +"+ppVar+" *, *)*"+ppType+" +"+ppVar+")?\\))"                 ;
                                                                                                                                 
-  public static final Pattern pDeclare=Pattern.compile(ppDeclareModifiers+"("+ppType+") +("+ppVar+") +($|=.*)")                 ;
+  public static final Pattern pDeclare=Pattern.compile(ppDeclareModifiers+"("+ppType+") +("+ppVar+") *($|=.*)")                 ;
   public static final Pattern pDeclareMethod=Pattern.compile(ppDeclareModifiers+"("+ppType+") +("+ppVar+") *"+ppMethodParams)   ;
   public static final Pattern pForInVar=Pattern.compile("((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")")                       ;
   public static final Pattern pForFromTo=Pattern.compile("(?:("+ppVar+") in )?\\[(.*)(\\.{2,3})(.*)\\]")                        ;
@@ -261,7 +261,7 @@ public class PrettyJava                                                         
           hasNextLine=false                                                                                                     ;
           break                                                                                                                 ;}}
       while(!linesWithContent[nexti])                                                                                           ;
-      int indentDiff;                                                                                                           ;
+      int indentDiff                                                                                                            ;
       if(hasNextLine)                                                                                                           {
         indentDiff=indentations[nexti]-indentations[i]                                                                          ;}
       else                                                                                                                      {

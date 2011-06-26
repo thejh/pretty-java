@@ -16,7 +16,10 @@ public class PrettyJava                                       {
   public static void testFor()                                {
     new Foo(new Bar)                                          ;
     new Foo(bar)                                              ;
+    long n=100 L                                              ;
     foo(new Foo)                                              ;
+    String bar="foobarz"                                      ;
+    long baz=n                                                ;
     for(int i=0;i<10;i++)                                     {
       System.out.println(i)                                   ;}
     for(int$number1=0;$number1<10;$number1++)                 {
