@@ -34,12 +34,14 @@ public class PrettyJava
   // A java variable can also start with other stuff, but it's aganist
   // convention, so I don't care.
   public static final String ppVar = "(?:[a-z][a-zA-Z$_0-9]*)"
-  public static final String ppPrimitive = "(?:byte|short|int|long|float|double|boolean|char)"
+  public static final String ppPrimitive = "(?:byte|short|int|long|float|double|boolean|char|void)"
   public static final String ppType = "(?:(?:[A-Z][a-zA-Z$_0-9]*|"+ppPrimitive+")(?:\\[\\])*)"
   public static final String ppDeclareModifier = "(?:public|private|protected|static|final)"
   public static final String ppDeclareModifiers = "(?:(?:"+ppDeclareModifier+" )*"+ppDeclareModifier+")?"
+  public static final String ppMethodParams = "(?:\\(((?:"+ppType+" +"+ppVar+" *, *)*"+ppType+" +"+ppVar+")?\\))"
   
   public static final Pattern pDeclare = Pattern.compile("("+ppType+") +("+ppVar+") +(;|=.*)")
+  public static final Pattern pDeclareMethod = Pattern.compile(ppDeclareModifiers+" +("+ppType+") +("+ppVar+") *"+ppMethodParams)
   public static final Pattern pForInVar = Pattern.compile("((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")")
   public static final Pattern pForFromTo = Pattern.compile("("+ppVar+") in \\[(.*)(\\.{2,3})(.*)\\]")
 
@@ -83,6 +85,19 @@ public class PrettyJava
       String type = mDeclare.group(1)
       String var = mDeclare.group(2)
       s.setType(var, type)
+    
+    Matcher mDeclareMethod = pDeclareMethod.matcher(line)
+    if mDeclareMethod.matches()
+      String returnType = mDeclareMethod.group(1)
+      String methodName = mDeclareMethod.group(2)
+      String paramsStr = mDeclareMethod.group(3)
+      if paramsStr != null
+        String[] paramStrs = paramsStr.split(" *, *")
+        for paramStr in paramStrs
+          String[] paramStrParts = paramStr.trim().split(" +")
+          String type = paramStrParts[0]
+          String var = paramStrParts[1]
+          s.setType(var, type)
   
   public static String stripIndentation(String line)
     int indent = getIndentation(line)

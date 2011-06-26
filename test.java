@@ -16,7 +16,9 @@ public class PrettyJava                                          {
     for (int i = 0; i < 10; i++)                                 {
       System.out.println(i)                                      ;}}
                                                                  
-  public static void foo()                                       {
+  public static void foo(String[] paramNames)                    {
     String[] names = new String[]{"Alice", "Bob", "Evil Eve"};   ;
     for (String name: names)                                     {
+      System.out.println(name)                                   ;}
+    for (String name: paramNames)                                {
       System.out.println(name)                                   ;}}}
