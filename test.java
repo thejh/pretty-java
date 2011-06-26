@@ -18,7 +18,8 @@ public class PrettyJava                                       {
       System.out.println(i)                                   ;}
     for(int$number1=0;$number1<10;$number1++)                 {
       for(int$number2=0;$number2<5;$number2++)                {
-        System.out.println("foobar")                          ;}}}
+        System.out.println("foobar")                          ;
+        System.out.println(Integer.parseInt("100"))           ;}}}
                                                               
   public static void foo(String[]paramNames)                  {
     String[]names=new String[]{"Alice","Bob","Evil Eve"};     ;

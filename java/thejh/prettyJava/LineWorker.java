@@ -11,16 +11,19 @@ class LineWorker                                                              {
   public void implicitCallBrackets(ArrayList<Token>tokens)                    {
     while(true)                                                               {
       Token lastToken=null                                                    ;
+      boolean found=false                                                     ;
       for(ListIterator<Token>iter=tokens.listIterator();iter.hasNext();)      {
         Token t=iter.next()                                                   ;
         if(lastToken!=null)                                                   {
-          if(lastToken.isVariably()&&t.isWord())                              {
+          if(lastToken.isVariably()&&!t.isSymbol()&&!t.isKeyword())           {
             iter.previous()                                                   ;
             iter.add(new SymbolToken('('))                                    ;
             tokens.add(new SymbolToken(')'))                                  ;
+            found=true                                                        ;
             break                                                             ;}}
         lastToken=t                                                           ;}
-      break                                                                   ;}}
+      if(!found)                                                              {
+        break                                                                 ;}}}
                                                                               
   public void recognizeFloatingPointNumbers(ArrayList<Token>tokens)           {
     Token twoAgo=null                                                         ;
