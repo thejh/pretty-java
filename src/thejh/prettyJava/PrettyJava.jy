@@ -92,7 +92,6 @@ public class PrettyJava
   public static final String ppDeclareModifiers = "(?:(?:"+ppDeclareModifier+" )*"+ppDeclareModifier+" +)?"
   public static final String ppMethodParams = "(?:\\(((?:"+ppType+" +"+ppVar+" *, *)*"+ppType+" +"+ppVar+")?\\))"
   
-  public static final Pattern pDeclare = Pattern.compile ppDeclareModifiers+"("+ppType+") +("+ppVar+") *($|=.*)"
   public static final Pattern pDeclareMethod = Pattern.compile ppDeclareModifiers+"("+ppType+") +("+ppVar+") *"+ppMethodParams
   public static final Pattern pForInVar = Pattern.compile "((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")"
   public static final Pattern pForFromTo = Pattern.compile "(?:("+ppVar+") in )?\\[(.*)(\\.{2,3})(.*)\\]"
@@ -135,12 +134,6 @@ public class PrettyJava
     return line
   
   public static String handleLine(String line, Scope s, SourceClass srcClass)
-    Matcher mDeclare = pDeclare.matcher line
-    if mDeclare.matches()
-      String type = mDeclare.group 1
-      String var = mDeclare.group 2
-      s.setType var, type
-    
     Matcher mDeclareMethod = pDeclareMethod.matcher line
     if mDeclareMethod.matches()
       String returnType = mDeclareMethod.group 1

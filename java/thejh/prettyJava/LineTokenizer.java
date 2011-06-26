@@ -6,9 +6,13 @@ import java.util.*                                                              
 abstract class Token                                                                                                            {
   public boolean isKeyword()                                                                                                    {
     return false                                                                                                                ;}
+  public boolean isModifier()                                                                                                   {
+    return false                                                                                                                ;}
   public boolean isVariably()                                                                                                   {
     return false                                                                                                                ;}
   public boolean isClassy()                                                                                                     {
+    return false                                                                                                                ;}
+  public boolean isSimpleType()                                                                                                 {
     return false                                                                                                                ;}
   public boolean isWord()                                                                                                       {
     return false                                                                                                                ;}
@@ -37,13 +41,21 @@ class NumberToken extends Token                                                 
     return true                                                                                                                 ;}}
                                                                                                                                 
 class WordToken extends Token                                                                                                   {
-  public static String[]keywords=new String[]{};                                                                                ;
+  public static String[]keywords                                                                                                ;
   static                                                                                                                        {
     String keywordsStr="float native super while "                                                                              ;
     keywordsStr+="catch extends int short try char final interface static void class finally long strictfp volatile const "     ;
     keywordsStr+="double implements protected throw byte else import public throws case enum instanceof return transient "      ;
     keywordsStr+="abstract continue for new switch assert default goto package synchronized boolean do if private this break"   ;
     keywords=keywordsStr.split(" ")                                                                                             ;}
+  public static String[]modifiers                                                                                               ;
+  static                                                                                                                        {
+    String modifiersStr="native final static volatile protected public transient abstract synchronized private"                 ;
+    modifiers=modifiersStr.split(" ")                                                                                           ;}
+  public static String[]simpleTypes                                                                                             ;
+  static                                                                                                                        {
+    String simpleTypesStr="float int short char void long double byte boolean"                                                  ;
+    simpleTypes=simpleTypesStr.split(" ")                                                                                       ;}
                                                                                                                                 
   public String value                                                                                                           ;
                                                                                                                                 
@@ -55,6 +67,18 @@ class WordToken extends Token                                                   
                                                                                                                                 
   public boolean isKeyword()                                                                                                    {
     for(String keyword:keywords)                                                                                                {
+      if(keyword.equals(value))                                                                                                 {
+        return true                                                                                                             ;}}
+    return false                                                                                                                ;}
+                                                                                                                                
+  public boolean isModifier()                                                                                                   {
+    for(String keyword:modifiers)                                                                                               {
+      if(keyword.equals(value))                                                                                                 {
+        return true                                                                                                             ;}}
+    return false                                                                                                                ;}
+                                                                                                                                
+  public boolean isSimpleType()                                                                                                 {
+    for(String keyword:simpleTypes)                                                                                             {
       if(keyword.equals(value))                                                                                                 {
         return true                                                                                                             ;}}
     return false                                                                                                                ;}

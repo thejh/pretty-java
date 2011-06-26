@@ -6,21 +6,22 @@ class LineWorker
   private String line
   private Scope scope
   private SourceClass srcClass
+  private ArrayList<Token> tokens
   
   public LineWorker(String line, Scope scope, SourceClass srcClass)
     this.line = line
     this.scope = scope
     this.srcClass = srcClass
   
-  public void assignmentToDeclaration(ArrayList<Token> tokens)
+  public void assignmentToDeclaration()
     String type = null
     if tokens.size() < 2
       return
     if !tokens.get(0).isVariably() || !tokens.get(1).toString().equals "="
       return
-    if null != scope.getType tokens.get(0).toString()
+    String name = tokens.get(0).toString()
+    if null != scope.getType name
       return
-    String name = tokens.get(1).toString()
     do
       if tokens.size() == 3
         Token value = tokens.get 2
@@ -34,8 +35,10 @@ class LineWorker
     if type != null
       tokens.add 0, new WordToken type
       scope.setType name, type
+    else
+      throw new RuntimeException "can't guess the type of '"+name+"' (and you didn't specify one)"
   
-  public void implicitCallBrackets(ArrayList<Token> tokens)
+  public void implicitCallBrackets()
     while true
       Token lastToken = null
       Token twoAgo = null
@@ -44,7 +47,8 @@ class LineWorker
         Token t = iter.next()
         if lastToken != null
           boolean tIsBlockerKeyword = t.isKeyword() && !t.toString().equals("new") && !t.toString().equals("this")
-          boolean lastTokenIsNewClass = twoAgo != null && lastToken.isClassy() && "new".equals(twoAgo.toString())
+          boolean lastIsClassy = lastToken.isClassy() || lastToken.isSimpleType()
+          boolean lastTokenIsNewClass = twoAgo != null && lastIsClassy && "new".equals(twoAgo.toString())
           boolean lastTokenBlocks = !lastToken.isString() && !lastToken.isVariably() && !lastTokenIsNewClass
           if !lastTokenBlocks && !t.isSymbol() && !tIsBlockerKeyword
             iter.previous()
@@ -70,7 +74,7 @@ class LineWorker
       if !completedOne
         break
   
-  public void recognizeFloatingPointNumbers(ArrayList<Token> tokens)
+  public void recognizeFloatingPointNumbers()
     Token twoAgo = null
     Token oneAgo = null
     for ListIterator<Token> iter = tokens.listIterator(); iter.hasNext();
@@ -91,15 +95,53 @@ class LineWorker
       twoAgo = oneAgo
       oneAgo = t
   
+  public void grabVartype()
+    int offset = 0
+    while offset < tokens.size() && tokens.get(offset).isModifier()
+      offset++
+    if tokens.size() < offset+2
+      return
+    int varOffset = offset
+    for ListIterator<Token> iter = tokens.listIterator(offset); iter.hasNext();
+      Token typeToken = iter.next()
+      if typeToken.isVariably()
+        break
+      boolean classy = typeToken.isClassy() || typeToken.isSimpleType()
+      boolean symbol = typeToken.isSymbol()
+      if !classy && !symbol
+        return
+      if symbol
+        boolean foundValidSymbol = false
+        String[] validSymbols = "< > [ ] ,".split " "
+        for validSymbol in validSymbols
+          if validSymbol.equals typeToken.toString()
+            foundValidSymbol = true
+        if !foundValidSymbol
+          return
+      varOffset++
+    // type must be specified
+    if offset == varOffset
+      return
+    // variable name must be after EOL
+    if varOffset == tokens.size()
+      return
+    List<Token> varTypeTokens = tokens.subList offset, varOffset
+    String varType = distokenize varTypeTokens
+    Token varToken = tokens.get varOffset
+    if !varToken.isVariably()
+      return
+    scope.setType varToken.toString(), varType
+  
   public String doIt()
     LineTokenizer tokenizer = new LineTokenizer line
-    ArrayList<Token> tokens = tokenizer.doIt()
-    recognizeFloatingPointNumbers tokens
-    implicitCallBrackets tokens
-    assignmentToDeclaration tokens
+    tokens = tokenizer.doIt()
+    recognizeFloatingPointNumbers()
+    implicitCallBrackets()
+    assignmentToDeclaration()
+    grabVartype()
     return distokenize tokens
   
-  public String distokenize(ArrayList<Token> tokens)
+  public String distokenize(List<Token> tokens)
     String distokenized = ""
     Token lastToken = null
     for ListIterator<Token> iter = tokens.listIterator(); iter.hasNext();
