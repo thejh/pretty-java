@@ -31,12 +31,12 @@ class Scope                                                                     
   public String makeNewName(String type)                                                                                        {
     int newID=1                                                                                                                 ;
     if(uniqueIDs.containsKey(type))                                                                                             {
-      newID=uniqueIDs.get(type)+1                                                                                               ;}
+      newID=1+uniqueIDs.get(type)                                                                                               ;}
     else                                                                                                                        {
       Scope s=this                                                                                                              ;
       while(s!=null&&(s=s.superscope)!=null)                                                                                    {
         if(s.uniqueIDs.containsKey(type))                                                                                       {
-          newID=s.uniqueIDs.get(type)+1                                                                                         ;
+          newID=1+s.uniqueIDs.get(type)                                                                                         ;
           s=null                                                                                                                ;}}}
     uniqueIDs.put(type,newID)                                                                                                   ;
     return type+newID                                                                                                           ;}}
@@ -67,7 +67,7 @@ class SourceClass                                                               
     if(methodIndex==-1)                                                                                                         {
       return null                                                                                                               ;}
     int rettypeEndIndex=htmlData.lastIndexOf("</CODE></FONT></TD>",methodIndex)                                                 ;
-    int rettypeBeginIndex=htmlData.lastIndexOf("<CODE>&nbsp;",rettypeEndIndex)+12                                               ;
+    int rettypeBeginIndex=12+htmlData.lastIndexOf("<CODE>&nbsp;",rettypeEndIndex)                                               ;
     return htmlData.substring(rettypeBeginIndex,rettypeEndIndex)                                                                ;}
                                                                                                                                 
   public String lookupReturnType(String type,String method)                                                                     {
@@ -96,7 +96,7 @@ public class PrettyJava                                                         
   public static final Pattern pDeclareMethod=Pattern.compile(ppDeclareModifiers+"("+ppType+") +("+ppVar+") *"+ppMethodParams)   ;
   public static final Pattern pForInVar=Pattern.compile("((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")")                       ;
   public static final Pattern pForFromTo=Pattern.compile("(?:("+ppVar+") in )?\\[(.*)(\\.{2,3})(.*)\\]")                        ;
-  public static final Pattern pImport=Pattern.compile("import ([*a-zA-Z0-9_$.]+)");                                             ;
+  public static final Pattern pImport=Pattern.compile("import ([*a-zA-Z0-9_$.]+)")                                              ;
                                                                                                                                 
   public static int getIndentation(String line)                                                                                 {
     for(int i=0;i<line.length();i++)                                                                                            {
@@ -183,7 +183,7 @@ public class PrettyJava                                                         
     for(int i=0;i<line.length();i++)                                                                                            {
       char c=line.charAt(i)                                                                                                     ;
       if(c!=' ')                                                                                                                {
-        if(line.indexOf("//")==i)                                                                                               {
+        if(i==line.indexOf("//"))                                                                                               {
           return false                                                                                                          ;}
         return true                                                                                                             ;}}
     return false                                                                                                                ;}
