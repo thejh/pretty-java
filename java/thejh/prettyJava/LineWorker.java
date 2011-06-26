@@ -4,9 +4,13 @@ import java.util.*                                                            ;
                                                                               
 class LineWorker                                                              {
   private String line                                                         ;
+  private Scope scope                                                         ;
+  private SourceClass srcClass                                                ;
                                                                               
-  public LineWorker(String line)                                              {
-    this.line=line                                                            ;}
+  public LineWorker(String line,Scope scope,SourceClass srcClass)             {
+    this.line=line                                                            ;
+    this.scope=scope                                                          ;
+    this.srcClass=srcClass                                                    ;}
                                                                               
   public void implicitCallBrackets(ArrayList<Token>tokens)                    {
     while(true)                                                               {

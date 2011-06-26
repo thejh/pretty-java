@@ -162,7 +162,7 @@ public class PrettyJava
       else
         srcClass.classImports.add(imported)
     
-    line = new LineWorker(line).doIt()
+    line = new LineWorker(line, s, srcClass).doIt()
     
     return line
   
