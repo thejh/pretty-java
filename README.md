@@ -8,9 +8,15 @@ It automatically inserts braces and semicolons. At the right side of your code, 
 
 Implicit calls
 ==============
-If you write a method name (actually, a word that isn't a keyword and begins with a small letter) followed by another non-symbol and non-keyword, an opening bracket will be inserted between the two and a closing bracket will be appended to the end ot the line. Valid code:
+If you write a method name (actually, a word that isn't a keyword and begins with a small letter) followed by another non-symbol and non-keyword, an opening bracket will be inserted between the two and a closing bracket will be inserted before the first closing bracket that would be more than the opening brackets or appended to the end of the line. Valid code:
 
     System.out.println Integer.parseInt "100"
+    printTo concat("  ", foo bar), output
+
+compiles to
+
+    System.out.println(Integer.parseInt("100"))   ;
+    printTo(concat("  ",foo(bar)),output)         ;
 
 Automatic braces for `if`, `for`, `else if` and `while`
 -------------------------------------------------------
