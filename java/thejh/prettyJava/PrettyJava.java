@@ -215,7 +215,6 @@ public class PrettyJava                                                         
   public static String compile(String code)                                                                                         {
     Scope s = new Scope()                                                                                                           ;
     SourceClass srcClass = new SourceClass()                                                                                        ;
-    System.err.println(srcClass.lookupReturnType("String", "toCharArray"))                                                          ;
     String[] lines = code.split("\\n")                                                                                              ;
     int[] indentations = new int[lines.length]                                                                                      ;
     boolean[] linesWithContent = new boolean[lines.length]                                                                          ;
