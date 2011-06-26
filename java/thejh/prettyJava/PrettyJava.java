@@ -20,7 +20,6 @@ class Scope                                                                     
     return null                                                                                                                     ;}
                                                                                                                                     
   public void setType(String var, String type)                                                                                      {
-    //System.err.println(depth+": '"+var+"' has type '"+type+"'")                                                                   
     vartypes.put(var, type)                                                                                                         ;}
                                                                                                                                     
   public Scope createSubscope()                                                                                                     {
@@ -40,8 +39,46 @@ class Scope                                                                     
           newID = s.uniqueIDs.get(type)+1                                                                                           ;
           s = null                                                                                                                  ;}}}
     uniqueIDs.put(type, newID)                                                                                                      ;
-    System.err.println("### newID is "+newID)                                                                                       ;
     return type + newID                                                                                                             ;}}
+                                                                                                                                    
+class SourceClass                                                                                                                   {
+  public ArrayList<String> packageImports = new ArrayList<String>()                                                                 ;
+  public ArrayList<String> classImports = new ArrayList<String>()                                                                   ;
+  public final String packagesRootFolder = "/usr/share/javadoc/java-1.6.0-openjdk/api/"                                             ;
+                                                                                                                                    
+  public SourceClass()                                                                                                              {
+    packageImports.add("java.lang")                                                                                                 ;}
+                                                                                                                                    
+  public String[] classesInPackage(String pkg)                                                                                      {
+    String folder = packagesRootFolder + pkg.replace('.', '/')                                                                      ;
+    String[] files = new File(folder).list()                                                                                        ;
+    ArrayList<String> htmlFiles = new ArrayList<String>()                                                                           ;
+    for (String file: files)                                                                                                        {
+      if (file.endsWith(".html"))                                                                                                   {
+        htmlFiles.add(file.substring(0, file.length()-5))                                                                           ;}}
+    return htmlFiles.toArray(new String[]{})                                                                                        ;}
+                                                                                                                                    
+  public String lookupFQNsReturnType(String fqn, String method)                                                                     {
+    String filename = packagesRootFolder + fqn.replace('.', '/') + ".html"                                                          ;
+    String htmlData = PrettyJava.readEntireFile(filename)                                                                           ;
+    htmlData = htmlData.substring(htmlData.indexOf("<!-- ========== METHOD SUMMARY =========== -->"))                               ;
+    htmlData = htmlData.substring(0, htmlData.indexOf("<!-- ============ FIELD DETAIL =========== -->"))                            ;
+    int methodIndex = htmlData.indexOf(">"+method+"</A></B>")                                                                       ;
+    if (methodIndex == -1)                                                                                                          {
+      return null                                                                                                                   ;}
+    int rettypeEndIndex = htmlData.lastIndexOf("</CODE></FONT></TD>", methodIndex)                                                  ;
+    int rettypeBeginIndex = htmlData.lastIndexOf("<CODE>&nbsp;", rettypeEndIndex)+12                                                ;
+    return htmlData.substring(rettypeBeginIndex, rettypeEndIndex)                                                                   ;}
+                                                                                                                                    
+  public String lookupReturnType(String type, String method)                                                                        {
+    for (String classImport: classImports)                                                                                          {
+      if (classImport.endsWith("."+type))                                                                                           {
+        return lookupFQNsReturnType(classImport, method)                                                                            ;}}
+    for (String pkg: packageImports)                                                                                                {
+      for (String cls: classesInPackage(pkg))                                                                                       {
+        if (cls.equals(type))                                                                                                       {
+          return lookupFQNsReturnType(pkg+"."+cls, method)                                                                          ;}}}
+    return null                                                                                                                     ;}}
                                                                                                                                     
 public class PrettyJava                                                                                                             {
   public static final String[] completeLineEating = new String[]{"if", "for", "else if", "while"}                                   ;
@@ -59,6 +96,7 @@ public class PrettyJava                                                         
   public static final Pattern pDeclareMethod = Pattern.compile(ppDeclareModifiers+" +("+ppType+") +("+ppVar+") *"+ppMethodParams)   ;
   public static final Pattern pForInVar = Pattern.compile("((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")")                         ;
   public static final Pattern pForFromTo = Pattern.compile("(?:("+ppVar+") in )?\\[(.*)(\\.{2,3})(.*)\\]")                          ;
+  public static final Pattern pImport = Pattern.compile("import ([*a-zA-Z0-9_$.]+)");                                               ;
                                                                                                                                     
   public static int getIndentation(String line)                                                                                     {
     for (int i = 0; i < line.length(); i++)                                                                                         {
@@ -96,7 +134,7 @@ public class PrettyJava                                                         
       return type+" "+var+": "+array                                                                                                ;}
     return line                                                                                                                     ;}
                                                                                                                                     
-  public static void grabFromLine(String line, Scope s)                                                                             {
+  public static String handleLine(String line, Scope s, SourceClass srcClass)                                                       {
     Matcher mDeclare = pDeclare.matcher(line)                                                                                       ;
     if (mDeclare.matches())                                                                                                         {
       String type = mDeclare.group(1)                                                                                               ;
@@ -114,7 +152,17 @@ public class PrettyJava                                                         
           String[] paramStrParts = paramStr.trim().split(" +")                                                                      ;
           String type = paramStrParts[0]                                                                                            ;
           String var = paramStrParts[1]                                                                                             ;
-          s.setType(var, type)                                                                                                      ;}}}}
+          s.setType(var, type)                                                                                                      ;}}}
+                                                                                                                                    
+    Matcher mImport = pImport.matcher(line)                                                                                         ;
+    if (mImport.matches())                                                                                                          {
+      String imported = mImport.group(1)                                                                                            ;
+      if (imported.endsWith(".*"))                                                                                                  {
+        srcClass.packageImports.add(imported.substring(0,imported.length()-2))                                                      ;}
+      else                                                                                                                          {
+        srcClass.classImports.add(imported)                                                                                         ;}}
+                                                                                                                                    
+    return line                                                                                                                     ;}
                                                                                                                                     
   public static String stripIndentation(String line)                                                                                {
     int indent = getIndentation(line)                                                                                               ;
@@ -149,20 +197,25 @@ public class PrettyJava                                                         
       result += str                                                                                                                 ;}
     return result                                                                                                                   ;}
                                                                                                                                     
-  public static String readEntireFile(String name) throws Exception                                                                 {
-    String content = ""                                                                                                             ;
-    File file = new File(name)                                                                                                      ;
-    FileInputStream rawin = new FileInputStream(file)                                                                               ;
-    BufferedReader in = new BufferedReader(new InputStreamReader(rawin))                                                            ;
-    String line = null                                                                                                              ;
-    while ( (line = in.readLine()) != null)                                                                                         {
-      if (!content.equals(""))                                                                                                      {
-        content += "\n"                                                                                                             ;}
-      content += line                                                                                                               ;}
-    return content                                                                                                                  ;}
+  public static String readEntireFile(String name)                                                                                  {
+    try                                                                                                                             {
+      String content = ""                                                                                                           ;
+      File file = new File(name)                                                                                                    ;
+      FileInputStream rawin = new FileInputStream(file)                                                                             ;
+      BufferedReader in = new BufferedReader(new InputStreamReader(rawin))                                                          ;
+      String line = null                                                                                                            ;
+      while ( (line = in.readLine()) != null)                                                                                       {
+        if (!content.equals(""))                                                                                                    {
+          content += "\n"                                                                                                           ;}
+        content += line                                                                                                             ;}
+      return content                                                                                                                ;}
+    catch (Exception e)                                                                                                             {
+      throw new RuntimeException(e)                                                                                                 ;}}
                                                                                                                                     
   public static String compile(String code)                                                                                         {
     Scope s = new Scope()                                                                                                           ;
+    SourceClass srcClass = new SourceClass()                                                                                        ;
+    System.err.println(srcClass.lookupReturnType("String", "toCharArray"))                                                          ;
     String[] lines = code.split("\\n")                                                                                              ;
     int[] indentations = new int[lines.length]                                                                                      ;
     boolean[] linesWithContent = new boolean[lines.length]                                                                          ;
@@ -182,7 +235,8 @@ public class PrettyJava                                                         
           for (int n = indentDiff/2; n < 0; n++)                                                                                    {
             s = s.superscope                                                                                                        ;}}
         lineScopes[i] = s                                                                                                           ;
-        grabFromLine(lineWithoutIndent, s)                                                                                          ;
+        lineWithoutIndent = handleLine(lineWithoutIndent, s, srcClass)                                                              ;
+        lines[i] = nTimes(" ", getIndentation(lines[i]))+lineWithoutIndent                                                          ;
         for (String completeLineEater: completeLineEating)                                                                          {
           if (lineWithoutIndent.startsWith(completeLineEater+" "))                                                                  {
             String withoutEater = lineWithoutIndent.substring(completeLineEater.length()+1)                                         ;
