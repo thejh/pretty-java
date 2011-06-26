@@ -8,6 +8,7 @@ class Scope                                                                     
   public Scope superscope                                                                                                           ;
   private HashMap<String, String> vartypes = new HashMap<String, String>()                                                          ;
   private int depth = 0                                                                                                             ;
+  private HashMap<String, Integer> uniqueIDs = new HashMap<String, Integer>()                                                       ;
                                                                                                                                     
   public String getType(String var)                                                                                                 {
     Scope s = this                                                                                                                  ;
@@ -19,14 +20,28 @@ class Scope                                                                     
     return null                                                                                                                     ;}
                                                                                                                                     
   public void setType(String var, String type)                                                                                      {
-    System.err.println(depth+": '"+var+"' has type '"+type+"'")                                                                     ;
+    //System.err.println(depth+": '"+var+"' has type '"+type+"'")                                                                   
     vartypes.put(var, type)                                                                                                         ;}
                                                                                                                                     
   public Scope createSubscope()                                                                                                     {
     Scope sub = new Scope()                                                                                                         ;
     sub.superscope = this                                                                                                           ;
     sub.depth = depth+1                                                                                                             ;
-    return sub                                                                                                                      ;}}
+    return sub                                                                                                                      ;}
+                                                                                                                                    
+  public String makeNewName(String type)                                                                                            {
+    int newID = 1                                                                                                                   ;
+    if (uniqueIDs.containsKey(type))                                                                                                {
+      newID = uniqueIDs.get(type)+1                                                                                                 ;}
+    else                                                                                                                            {
+      Scope s = this                                                                                                                ;
+      while (s != null && (s = s.superscope) != null)                                                                               {
+        if (s.uniqueIDs.containsKey(type))                                                                                          {
+          newID = s.uniqueIDs.get(type)+1                                                                                           ;
+          s = null                                                                                                                  ;}}}
+    uniqueIDs.put(type, newID)                                                                                                      ;
+    System.err.println("### newID is "+newID)                                                                                       ;
+    return type + newID                                                                                                             ;}}
                                                                                                                                     
 public class PrettyJava                                                                                                             {
   public static final String[] completeLineEating = new String[]{"if", "for", "else if", "while"}                                   ;
@@ -43,7 +58,7 @@ public class PrettyJava                                                         
   public static final Pattern pDeclare = Pattern.compile("("+ppType+") +("+ppVar+") +(;|=.*)")                                      ;
   public static final Pattern pDeclareMethod = Pattern.compile(ppDeclareModifiers+" +("+ppType+") +("+ppVar+") *"+ppMethodParams)   ;
   public static final Pattern pForInVar = Pattern.compile("((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")")                         ;
-  public static final Pattern pForFromTo = Pattern.compile("("+ppVar+") in \\[(.*)(\\.{2,3})(.*)\\]")                               ;
+  public static final Pattern pForFromTo = Pattern.compile("(?:("+ppVar+") in )?\\[(.*)(\\.{2,3})(.*)\\]")                          ;
                                                                                                                                     
   public static int getIndentation(String line)                                                                                     {
     for (int i = 0; i < line.length(); i++)                                                                                         {
@@ -60,6 +75,8 @@ public class PrettyJava                                                         
       String start = mFromTo.group(2)                                                                                               ;
       String rangeDots = mFromTo.group(3)                                                                                           ;
       String end = mFromTo.group(4)                                                                                                 ;
+      if (var == null)                                                                                                              {
+        var = s.makeNewName("$number")                                                                                              ;}
       return "int "+var+" = "+start+"; "+var+" < "+end+"; "+var+"++"                                                                ;}
                                                                                                                                     
     // "[String ]line in lines"                                                                                                     

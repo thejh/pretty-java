@@ -14,7 +14,10 @@ public class PrettyJava                                          {
                                                                  
   public static void testFor()                                   {
     for (int i = 0; i < 10; i++)                                 {
-      System.out.println(i)                                      ;}}
+      System.out.println(i)                                      ;}
+    for (int $number1 = 0; $number1 < 10; $number1++)            {
+      for (int $number2 = 0; $number2 < 5; $number2++)           {
+        System.out.println("foobar")                             ;}}}
                                                                  
   public static void foo(String[] paramNames)                    {
     String[] names = new String[]{"Alice", "Bob", "Evil Eve"};   ;

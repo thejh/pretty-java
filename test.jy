@@ -15,6 +15,9 @@ public class PrettyJava
   public static void testFor()
     for i in [0..10]
       System.out.println(i)
+    for [0..10]
+      for [0..5]
+        System.out.println("foobar")
   
   public static void foo(String[] paramNames)
     String[] names = new String[]{"Alice", "Bob", "Evil Eve"};
