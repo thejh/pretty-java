@@ -27,3 +27,8 @@ Loop through ranges (start is inclusive, end is exclusive):
 
     for i in [0..array.length]
       System.out.println(i)
+
+Loop through ranges without an index variable (jump in the air ten times):
+
+    for [0..10]
+      jumpIn(theAir)
