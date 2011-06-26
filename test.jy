@@ -23,8 +23,8 @@ public class PrettyJava
   public static void foo(String[] paramNames)
     String[] names = new String[]{"Alice", "Bob", "Evil Eve"};
     for name in names
-      System.out.println(name)
+      System.out.println name
     for name in paramNames
-      System.out.println(name)
+      System.out.println name
     for number in numbers
-      System.out.println(number)
+      System.out.println number

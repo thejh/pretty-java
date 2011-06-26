@@ -162,6 +162,8 @@ public class PrettyJava
       else
         srcClass.classImports.add(imported)
     
+    line = new LineWorker(line).doIt()
+    
     return line
   
   public static String stripIndentation(String line)
@@ -234,14 +236,14 @@ public class PrettyJava
           for n in [indentDiff/2..0]
             s = s.superscope
         lineScopes[i] = s
-        lineWithoutIndent = handleLine(lineWithoutIndent, s, srcClass)
-        lines[i] = nTimes(" ", getIndentation(lines[i]))+lineWithoutIndent
         for String completeLineEater: completeLineEating
           if lineWithoutIndent.startsWith(completeLineEater+" ")
             String withoutEater = lineWithoutIndent.substring(completeLineEater.length()+1)
             if completeLineEater.equals("for")
               withoutEater = compileFor(withoutEater, s)
             lines[i] = nTimes(" ", getIndentation(lines[i]))+completeLineEater+" ("+withoutEater+")"
+        lineWithoutIndent = handleLine(stripIndentation(lines[i]), s, srcClass)
+        lines[i] = nTimes(" ", getIndentation(lines[i]))+lineWithoutIndent
         lastIndent = indentation
       if lines[i].length() > maxLineLength
         maxLineLength = lines[i].length()

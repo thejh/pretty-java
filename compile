@@ -1,6 +1,17 @@
 #!/bin/bash
-git checkout bin/*
-java -cp 'bin' thejh.prettyJava.PrettyJava src/thejh/prettyJava/PrettyJava.jy > java/thejh/prettyJava/PrettyJava.java
-javac -sourcepath 'java' -d 'bin' -Xlint:deprecation java/thejh/prettyJava/PrettyJava.java
-java -cp 'bin' thejh.prettyJava.PrettyJava src/thejh/prettyJava/PrettyJava.jy > java/thejh/prettyJava/PrettyJava.java
-javac -sourcepath 'java' -d 'bin' -Xlint:deprecation java/thejh/prettyJava/PrettyJava.java
+
+git checkout bin/* 2>/dev/null
+
+for file in $(ls -1 src/thejh/prettyJava | grep '\.jy$' | sed 's|^\(.*\)\..*$|\1|g'); do
+  echo "s->s '$file'"
+  java -cp 'bin' thejh.prettyJava.PrettyJava src/thejh/prettyJava/$file.jy > java/thejh/prettyJava/$file.java
+done
+echo "s->s done"
+javac -sourcepath 'java' -d 'bin' -Xlint:deprecation java/thejh/prettyJava/*.java
+
+for file in $(ls -1 src/thejh/prettyJava | grep '\.jy$' | sed 's|^\(.*\)\..*$|\1|g'); do
+  echo "s->s '$file'"
+  java -cp 'bin' thejh.prettyJava.PrettyJava src/thejh/prettyJava/$file.jy > java/thejh/prettyJava/$file.java
+done
+echo "s->s done"
+javac -sourcepath 'java' -d 'bin' -Xlint:deprecation java/thejh/prettyJava/*.java
