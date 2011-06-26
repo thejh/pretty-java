@@ -34,6 +34,8 @@ class LineWorker
     if type != null
       tokens.add 0, new WordToken type
       scope.setType name, type
+    else
+      throw new RuntimeException "can't guess the type of '"+distokenize(tokens)+"' (and you didn't specify one)"
   
   public void implicitCallBrackets(ArrayList<Token> tokens)
     while true

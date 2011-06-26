@@ -16,10 +16,12 @@ public class PrettyJava
   public static void testFor()
     new Foo new Bar
     new Foo bar
-    long n = 100L
+    long n = 100
     foo new Foo
     bar = "foobarz"
     baz = n
+    qux = true
+    quux = false
     for i in [0..10]
       System.out.println(i)
     for [0..10]
