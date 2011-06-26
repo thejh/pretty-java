@@ -20,6 +20,7 @@ public class PrettyJava
       for [0..5]
         System.out.println("foobar")
         System.out.println Integer.parseInt "100"
+        printTo concat("  ", foo bar), output
   
   public static void foo(String[] paramNames)
     String[] names = new String[]{"Alice", "Bob", "Evil Eve"};

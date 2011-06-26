@@ -15,18 +15,31 @@ class LineWorker
   public void implicitCallBrackets(ArrayList<Token> tokens)
     while true
       Token lastToken = null
-      boolean found = false
+      boolean completedOne = false
       for ListIterator<Token> iter = tokens.listIterator(); iter.hasNext();
         Token t = iter.next()
         if lastToken != null
           if lastToken.isVariably() && !t.isSymbol() && !t.isKeyword()
             iter.previous()
             iter.add(new SymbolToken('('))
-            tokens.add(new SymbolToken(')'))
-            found = true
+            int bracketLevel = 0
+            while iter.hasNext()
+              Token t2 = iter.next()
+              if t2.isSymbol()&&t2.toString().equals "("
+                bracketLevel++
+              else if t2.isSymbol()&&t2.toString().equals ")"
+                bracketLevel--
+                if bracketLevel < 0
+                  iter.previous()
+                  iter.add(new SymbolToken(')'))
+                  completedOne = true
+                  break
+            if !completedOne
+              tokens.add(new SymbolToken(')'))
+              completedOne = true
             break
         lastToken = t
-      if !found
+      if !completedOne
         break
   
   public void recognizeFloatingPointNumbers(ArrayList<Token> tokens)
