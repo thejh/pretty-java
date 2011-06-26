@@ -89,11 +89,11 @@ public class PrettyJava
   public static final String ppPrimitive = "(?:byte|short|int|long|float|double|boolean|char|void)"
   public static final String ppType = "(?:(?:[A-Z][a-zA-Z$_0-9]*|"+ppPrimitive+")(?:\\[\\])*)"
   public static final String ppDeclareModifier = "(?:public|private|protected|static|final)"
-  public static final String ppDeclareModifiers = "(?:(?:"+ppDeclareModifier+" )*"+ppDeclareModifier+")?"
+  public static final String ppDeclareModifiers = "(?:(?:"+ppDeclareModifier+" )*"+ppDeclareModifier+" +)?"
   public static final String ppMethodParams = "(?:\\(((?:"+ppType+" +"+ppVar+" *, *)*"+ppType+" +"+ppVar+")?\\))"
   
-  public static final Pattern pDeclare = Pattern.compile("("+ppType+") +("+ppVar+") +(;|=.*)")
-  public static final Pattern pDeclareMethod = Pattern.compile(ppDeclareModifiers+" +("+ppType+") +("+ppVar+") *"+ppMethodParams)
+  public static final Pattern pDeclare = Pattern.compile(ppDeclareModifiers+"("+ppType+") +("+ppVar+") +($|=.*)")
+  public static final Pattern pDeclareMethod = Pattern.compile(ppDeclareModifiers+"("+ppType+") +("+ppVar+") *"+ppMethodParams)
   public static final Pattern pForInVar = Pattern.compile("((?:"+ppType+" )?)("+ppVar+") +in +("+ppVar+")")
   public static final Pattern pForFromTo = Pattern.compile("(?:("+ppVar+") in )?\\[(.*)(\\.{2,3})(.*)\\]")
   public static final Pattern pImport = Pattern.compile("import ([*a-zA-Z0-9_$.]+)");

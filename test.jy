@@ -3,6 +3,7 @@ package thejh.prettyJava
 import java.io.*
 
 public class PrettyJava
+  public static final String[] numbers = new String[]{"1", "2"}
   public static int getIndentation(String line)
     for i in [0..line.length()]
       char c = line.charAt(i)
@@ -25,3 +26,5 @@ public class PrettyJava
       System.out.println(name)
     for name in paramNames
       System.out.println(name)
+    for number in numbers
+      System.out.println(number)
